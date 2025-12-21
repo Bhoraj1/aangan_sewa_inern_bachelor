@@ -108,7 +108,6 @@ export const addBranchManager = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 export const getBranchManagers = async (req, res) => {
   try {
     const [managers] = await db.query(`
@@ -116,11 +115,8 @@ export const getBranchManagers = async (req, res) => {
         u.user_id,
         u.email,
         u.role,
-        u.created_at,
-        b.branch_name,
-        b.branch_id
+        u.created_at
       FROM users u
-      LEFT JOIN branch b ON u.branch_id = b.branch_id
       WHERE u.role = 'branch_manager'
     `);
 
