@@ -34,48 +34,50 @@ export const addInquiry = async (req, res) => {
 export const getInquiry = async (req, res) => {
   try {
     const { role, id } = req.user;
-    let query;
-    let params = [];
 
     if (role === "admin") {
-      query = `
-        SELECT 
-          i.*,
-          b.branch_name
+      const [inquiries] = await db.query(`
+        SELECT i.*, b.branch_name
         FROM inquiry i
         LEFT JOIN branch b ON i.branch_id = b.branch_id
         ORDER BY i.created_at DESC
-      `;
-    } else {
+      `);
+
+      return res.status(200).json({
+        message: "Inquiries retrieved successfully",
+        data: inquiries,
+      });
+    }
+
+    if (role === "branch_manager") {
       const [user] = await db.query(
         "SELECT branch_id FROM users WHERE user_id = ?",
         [id]
       );
 
-      if (user.length === 0 || !user[0].branch_id) {
+      const userBranchId = user[0]?.branch_id;
+
+      if (user.length === 0 || !userBranchId) {
         return res.status(404).json({ message: "Branch not assigned" });
       }
 
-      query = `
-        SELECT 
-          i.*,
-          b.branch_name
+      const [inquiries] = await db.query(
+        `
+        SELECT i.*, b.branch_name
         FROM inquiry i
         LEFT JOIN branch b ON i.branch_id = b.branch_id
         WHERE i.branch_id = ?
         ORDER BY i.created_at DESC
-      `;
-      params = [user[0].branch_id];
+      `,
+        [userBranchId]
+      );
+
+      return res.status(200).json({
+        message: "Inquiries retrieved successfully",
+        data: inquiries,
+      });
     }
-
-    const [inquiries] = await db.query(query, params);
-
-    res.status(200).json({
-      message: "Inquiries retrieved successfully",
-      data: inquiries,
-    });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error });
   }
 };

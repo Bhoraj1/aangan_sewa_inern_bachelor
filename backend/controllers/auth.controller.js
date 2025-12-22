@@ -133,3 +133,27 @@ export const getBranchManagers = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const deleteBranchManager = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    const [user] = await db.query(
+      "SELECT * FROM users WHERE user_id = ? AND role = 'branch_manager'",
+      [user_id]
+    );
+
+    if (user.length === 0) {
+      return res.status(404).json({ message: "Branch manager not found" });
+    }
+
+    await db.query("DELETE FROM users WHERE user_id = ?", [user_id]);
+
+    res.status(200).json({
+      message: "Branch manager deleted successfully"
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -118,7 +118,7 @@ export const addBranch = async (req, res) => {
 export const getAllBranches = async (req, res) => {
   try {
     const [rows] = await db.query(`SELECT d.district_name,
-       b.branch_name,b.remarks from branch b LEFT JOIN district d 
+       b.branch_id,b.branch_name,b.remarks from branch b LEFT JOIN district d 
        ON b.branch_id = d.district_id`);
     res.status(200).json({
       message: "successfully retrieved all branch name",
