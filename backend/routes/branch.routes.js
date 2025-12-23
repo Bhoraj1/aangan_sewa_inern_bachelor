@@ -7,12 +7,24 @@ import {
   getAllDistricts,
   getAllProviences,
 } from "../controllers/branch.controller.js";
+import { isLogin } from "../middlewares/isLogin.js";
+import { authorizeRoles } from "./../middlewares/isAuth.js";
 const branchRouter = express.Router();
 
-branchRouter.post("/add-provience", addProvience);
+branchRouter.post(
+  "/add-provience",
+  isLogin,
+  authorizeRoles("admin"),
+  addProvience
+);
 branchRouter.get("/get-proviences", getAllProviences);
 
-branchRouter.post("/add-district", addDistrict);
+branchRouter.post(
+  "/add-district",
+  isLogin,
+  authorizeRoles("admin"),
+  addDistrict
+);
 branchRouter.get("/get-districts", getAllDistricts);
 
 branchRouter.post("/add-branch", addBranch);

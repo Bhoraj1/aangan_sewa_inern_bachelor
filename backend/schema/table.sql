@@ -3,11 +3,10 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     role ENUM('admin', 'branch_manager') NOT NULL DEFAULT 'branch_manager',
-     branch_id INT,
+    branch_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
 )
-
 
 
 CREATE TABLE province (
@@ -52,3 +51,17 @@ CREATE TABLE inquiry (
     FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
 );
 
+
+CREATE TABLE staff (
+    staff_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE,
+    phone VARCHAR(20),
+    aaddress VARCHAR(255),
+    password VARCHAR(255) NOT NULL,
+    role ENUM('staff') NOT NULL DEFAULT 'staff',
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    branch_id INT NOT NULL,
+    FOREIGN KEY (branch_id)REFERENCES branch(branch_id)
+);

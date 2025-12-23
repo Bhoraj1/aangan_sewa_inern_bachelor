@@ -28,9 +28,14 @@ export const authLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: userData.user_id, role: userData.role },
+      {
+        id: userData.user_id,
+        email: userData.email,
+        role: userData.role,
+        branch_id: userData.branch_id,
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: process.env.EXPIRE }
     );
 
     res.cookie("token", token, {
@@ -46,11 +51,11 @@ export const authLogin = async (req, res) => {
         user_id: userData.user_id,
         email: userData.email,
         role: userData.role,
+        branch_id: userData.branch_id,
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
@@ -61,8 +66,7 @@ export const signout = async (req, res) => {
       message: "Signout successful",
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
@@ -112,7 +116,7 @@ export const addBranchManager = async (req, res) => {
 export const getBranchManagers = async (req, res) => {
   try {
     const [managers] = await db.query(`
-      SELECT 
+      SELECT
         u.user_id,
         u.email,
         u.role,
@@ -126,7 +130,7 @@ export const getBranchManagers = async (req, res) => {
 
     res.status(200).json({
       message: "Branch managers retrieved successfully",
-      data: managers
+      data: managers,
     });
   } catch (error) {
     console.log(error);
@@ -150,7 +154,7 @@ export const deleteBranchManager = async (req, res) => {
     await db.query("DELETE FROM users WHERE user_id = ?", [user_id]);
 
     res.status(200).json({
-      message: "Branch manager deleted successfully"
+      message: "Branch manager deleted successfully",
     });
   } catch (error) {
     console.log(error);

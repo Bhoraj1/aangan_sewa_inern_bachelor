@@ -6,6 +6,7 @@ import branchRouter from "./routes/branch.routes.js";
 import serviceRouter from "./routes/service.route.js";
 import authRouter from "./routes/auth.routes.js";
 import siteRouter from "./routes/site.routes.js";
+import staffRouter from "./routes/staff.routes.js";
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/branch", branchRouter);
 app.use("/api/service", serviceRouter);
 app.use("/api/site", siteRouter);
+app.use('/api/staff',staffRouter)
 
 const port = process.env.PORT || 4000;
 try {
