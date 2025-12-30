@@ -8,16 +8,23 @@ import authRouter from "./routes/auth.routes.js";
 import siteRouter from "./routes/site.routes.js";
 import staffRouter from "./routes/staff.routes.js";
 dotenv.config();
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use("/api/auth", authRouter);
 app.use("/api/branch", branchRouter);
 app.use("/api/service", serviceRouter);
 app.use("/api/site", siteRouter);
-app.use('/api/staff',staffRouter)
+app.use("/api/staff", staffRouter);
 
 const port = process.env.PORT || 4000;
 try {
